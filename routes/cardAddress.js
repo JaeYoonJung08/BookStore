@@ -29,29 +29,37 @@ router.post('/create/card', async (req, res) => {
 
     console.log(cardNumber, cardtype,  cardExpriation);
     try {
-        //inner join 시작점
-
         //카드가 있는 지 조회
         const cardCheck = await req.db.query(
-            'select card_id from card where card_number = ?',
-            [cardNumber]
+            'select card.card_id, card.user_id from card inner join user on user.user_id = card.user_id where user.name = ? and card.card_number = ?',
+            [req.session.userName, cardNumber]
         )
-        console.log(cardCheck);
 
+        console.log(cardCheck);
+        console.log(cardCheck.user_id)
         if (cardCheck.length !== 0)
         {
             return res.send(
                 `<script type="text/javascript">
                 alert("이미 등록된 카드입니다.");
-                location.href='/user';
+                location.href='/cardAddr';
                 </script>`)
         }
         else
         {
-
+            const InsertCard = await req.db.query(
+                'INSERT INTO card(user_id, expriation_time, type_card, card_number) VALUES (? , ? , ? , ?)',
+                [req.session.user_id, cardExpriation, cardtype, cardNumber]
+            )
+            return res.send(
+                `<script type="text/javascript">
+                alert("카드가 등록되었습니다.");
+                location.href='/cardAddr';
+                </script>`)
         }
     }
-    catch{
+    catch(error){
+        console.log(error)
 
     }
 
