@@ -34,7 +34,8 @@ router.post('/signin', async (req, res) => {
     else  
     {
       req.session.userName = userName;
-      console.log('로그인 성공' + req.session.user_id);
+      req.session.user_id = login[0].user_id;
+      // console.log('로그인 성공' + req.session.user_id);
     }
     return res.redirect('/');
   } 
