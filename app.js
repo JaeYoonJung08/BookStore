@@ -53,6 +53,7 @@ app.use(express.urlencoded({ extended: true }));
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');
 var carAddress = require('./routes/cardAddress');
+var bookList = require('./routes/booklist')
 
 
 // view engine setup
@@ -68,6 +69,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
 app.use('/cardAddr', carAddress);
+app.use('/booklist', bookList);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

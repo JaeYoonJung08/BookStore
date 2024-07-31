@@ -1,0 +1,138 @@
+doctype html
+html
+  head
+    title Booklist Page
+    style.
+      body {
+        display: flex; 
+        flex-direction: column;
+        align-items: center;
+      }
+      .container {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+      }
+      table {
+        width: 50%;
+        border-collapse: collapse;
+        margin-right: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+      form {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      input {
+        width : 300px;
+        margin : 10px;
+        padding : 5px;
+      }
+  body
+    h1 이 페이지는 책 추가와 조회를 위한 페이지입니다.
+    .container
+      table
+        thead
+          tr
+            th 책 ID
+            th 책 이름
+            th 책 수량
+            th 가격
+            th 상세보기
+        tbody
+          each book in books
+            tr
+              td= book.book_id
+              td= book.book_name
+              td= book.book_count
+              td= book.book_price
+              td
+                a(href=`/booklist/${book.book_id}`) 상세보기
+      form(action="/booklist/bookAdd", method="post")
+        div 
+          input(type="text", name="bookName", placeholder="책 이름을 작성해주세요.")
+        div 
+          input(type="text", name="bookCount", placeholder="책 수량을 입력해주세요")
+        div 
+          input(type="text", name="bookPrice", placeholder="책 가격을 입력해주세요.")
+        div 
+          button(type="submit") 책 추가
+
+        
+
+
+//- doctype html
+//- html
+//-   head
+//-     title Booklist Page
+//-     style.
+//-       table {
+//-         width: 50%;
+//-         border-collapse: collapse;
+//-       }
+//-       th, td {
+//-         border: 1px solid #ddd;
+//-         padding: 8px;
+//-       }
+//-       th {
+//-         background-color: #f2f2f2;
+//-         text-align: left;
+//-       }
+//-       form {
+//-         display: flex;
+//-         flex-direction: column;
+//-         align-items: center;
+//-         margin: 0 20px;
+//-       }
+//-   body
+//-     h1 이 페이지는 책 추가와 조회를 위한 페이지입니다.
+//-     table
+//-       thead
+//-         tr
+//-           th 책 ID
+//-           th 책 이름
+//-           th 책 수량
+//-           th 가격
+//-           th 상세보기
+//-       tbody
+//-         each book in books
+//-           tr
+//-             td= book.book_id
+//-             td= book.book_name
+//-             td= book.book_count
+//-             td= book.book_price
+//-             td
+//-               a(href=`/booklist/${book.book_id}`) 상세보기
+//-     form(action="/h", method="post")
+//-       div 
+//-         input(type="text", name="dd", placeholder="here")
+    
+
+//- 그냥 보여주기
+//- doctype html
+//- html
+//-   head
+//-     title booklist page
+//-   body
+//-     h1 이 페이지는 책 추가와 조회를 위한 페이지입니다.
+//-       each book in books
+//-         //-이 숨겨진 입력 필드는 책 ID를 포함합니다. 보통 폼에서 서버로 특정 데이터를 전송하기 위해 사용됩니다. 여기서는 book_id를 숨겨진 형태로 포함하지만, 폼으로 제출하거나 자바스크립트에서 참조할 때 사용할 수 있습니다.
+//-         input(type="hidden", name="book_id", value=book.book_id)
+//-         //- 각 책의 상세 정보 페이지로 링크
+//-         //- a(href=`/booklist/${book.book_id}`) 
+//-         include ./card.pug
+
+//- card.pug 
+//- div.card
+//-   h2= book.book_name
+//-   p 책 수량: #{book.book_count}
+//-   p 가격: #{book.book_price} 원
