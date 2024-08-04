@@ -1,0 +1,45 @@
+doctype html
+html
+  head
+    title 장바구니 목록
+    style.
+      table {
+        width: 50%;
+        border-collapse: collapse;
+        margin-right: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+  body 
+    h1 장바구니 목록
+    if books.length
+      table
+        thead 
+          tr
+            th 책 ID 
+            th 책 이름
+            th 가격
+            th 수량
+        tbody 
+          each book in books
+            tr
+              td= book.book_id
+              td= book.book_name
+              td= book.book_price
+              td= bookbasketlist.find(item => item.book_id === book.book_id).book_count
+    else
+      p 장바구니에 담긴 책이 없습니다.
+
+
+//- doctype html
+//- html
+//-   head
+//-     title User Form
+//-     body 
+//-         h1 장바구니 페이지입니다.

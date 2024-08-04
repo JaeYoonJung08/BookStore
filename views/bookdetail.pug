@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    title User Form
+    style.
+      table {
+        width: 50%;
+        border-collapse: collapse;
+        margin-right: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+    body 
+        h1 책 상세페이지입니다
+    .container 
+        table
+            thead 
+              tr
+                th 책 ID 
+                th 책 이름
+                th 가격
+                th 책 수량
+            tbody 
+              tr
+                td= book.book_id 
+                td= book.book_name 
+                td= book.book_count 
+                td= book.book_price
+        form(action="/booklist/basketAdd", method="post")
+            input(type="hidden", name="book_id", value=book.book_id)
+            input(type="text", name="book_count", placeholder="주문할 수량을 넣어주세요")
+            div 
+            button(type="submit") 장바구니 추가
+        
+        
+            
