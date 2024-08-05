@@ -24,9 +24,11 @@ router.get('/', async (req, res) => {
                 'select * from basketlist where basket_id = (select basket_id from bookbasket where user_id = ?)',
                 [req.session.user_id]
             )    
-            console.log(bookbasketlist);
+            console.log("bookbasketlist : ", bookbasketlist);
             // 장바구니에 책이 있는 경우
             if (bookbasketlist.length > 0) {
+                req.session.basket_id = bookbasketlist[0].basket_id;
+
                 // 장바구니에 담긴 모든 book_id를 배열로 만듦
                 const bookIds = bookbasketlist.map(item => item.book_id);
                 console.log(bookIds);
@@ -36,7 +38,7 @@ router.get('/', async (req, res) => {
                     [bookIds]
                 );
 
-                console.log(books);
+                console.log("books : " , books);
                 return res.render('bookbasket', { books, bookbasketlist });
             }
             else 
