@@ -74,14 +74,67 @@ router.post('/add', async (req, res) => {
     console.log("books : ", books);
     console.log("selectedBookList : ", selectedBookList);
 
-    // try{
-    //     const InsertOrders = await req.db.query(
-    //         'INSERT into values'
-    //     )
-    // }
-    // catch(error){
-    //     console.log(error);
-    // }
+    try{
+        const valueAddr = await req.db.query(
+            'select basic_add, detail_add, postal_code from addr where addr_id = ?', 
+            [selectedAddress]
+        )
+
+        const valueCard = await req.db.query(
+            'select card_number, type_card, expriation_time from card where card_id = ?', 
+            [selectedCard]
+        )
+
+
+        console.log(valueAddr);
+
+
+        const { basic_add, detail_add, postal_code } = valueAddr[0];
+        const { card_number, type_card, expriation_time } = valueCard[0];
+        
+        //order 테이블에 값 넣기
+        const insertOrderQuery = `
+        INSERT INTO orders (
+            user_id, all_price, basic_add, detail_add, postal_code, card_number, type_card, expriation_time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        
+        const result = await req.db.query(insertOrderQuery, [
+            req.session.user_id, totalPrice, basic_add, detail_add, postal_code, card_number, type_card, expriation_time
+        ]);
+
+        console.log('Order inserted successfully ', result);
+
+        const orders_id = result.insertId;
+
+        //여기서 부터 orderlist
+        const selectedBooks = JSON.parse(selectedBookList);
+        for (const book of selectedBooks) {
+            const insertOrderListQuery = `
+                INSERT INTO orderlist (orders_id, book_id, orderlist_count)
+                VALUES (?, ?, ?)
+            `;
+            await req.db.query(insertOrderListQuery, [orders_id, book.book_id, book.book_count]);
+        }
+
+
+
+        res.send(
+            `<script type="text/javascript">
+            alert("주문이 성공적으로 처리되었습니다.");
+            location.href='/';
+            </script>`
+        );
+
+    }
+    catch(error){
+        console.log(error);
+        res.send(
+            `<script type="text/javascript">
+            alert("주문 처리 중 오류가 발생했습니다.");
+            location.href='/';
+            </script>`
+        );
+    }
 
     
 
