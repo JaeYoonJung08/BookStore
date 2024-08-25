@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    title orderSelectedPage
+    style.
+      table {
+        width: 50%;
+        border-collapse: collapse;
+        margin-right: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+    body 
+    .container
+        h1 주문내역 
+        table
+            thead 
+              tr
+                th 총가격 
+                th 기본주소
+                th 상세주소
+                th 우편번호
+                th 카드번호
+                th 카드종류
+                th 카드만료기간
+                th 상세보기
+            tbody 
+              each order in ordersList
+                tr
+                  td= order.all_price 
+                  td= order.basic_add 
+                  td= order.detail_add 
+                  td= order.postal_code
+                  td= order.card_number 
+                  td= order.type_card 
+                  td= order.expriation_time 
+                  
+
+        
+        
+            
