@@ -18,7 +18,7 @@ router.get('/', function(req, res) {
     }
     else
     {
-        res.render('cardAddr');    
+        res.render('cardAddr/cardAddr');    
     }
 });
 
@@ -107,11 +107,38 @@ router.post('/create/addr', async (req, res) => {
             location.href='/cardAddr';
             </script>`) 
     }
-    
-
-    
-
 });
+
+router.get('/select/all', async (req, res) => {
+    logger.info(`Request received for URL: ${req.originalUrl}`);
+    try
+    {
+        //카드 주소 조회 
+        const card = await req.db.query(
+            'select * from card where user_id = ?',
+            [req.session.user_id]
+        )
+        const addr = await req.db.query(
+            'select * from addr where user_id = ?',
+            [req.session.user_id]
+        )
+        res.render('cardAddr/cardAddr_select', {card:card, addr:addr});
+
+    }
+    catch (error)
+    {
+        console.log(error);
+        return res.send(
+            `<script type="text/javascript">
+            alert("데이터베이스 오류입니다.");
+            location.href='/cardAddr';
+            </script>`) 
+    }
+ 
+
+    
+
+})
 
 
 
