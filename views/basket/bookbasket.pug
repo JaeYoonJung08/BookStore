@@ -27,6 +27,7 @@ html
         document.getElementById('totalPrice').value = total;
       }
   body 
+    a(href="/" style="margin-bottom: 10px;") 메인화면 돌아가기
     h1 장바구니 목록
     if books.length
       form(action="bookbasket/order", method="POST", onsubmit="calculateTotal()")

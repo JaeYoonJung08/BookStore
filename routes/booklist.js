@@ -83,11 +83,19 @@ router.post('/bookAdd', async (req, res) => {
 router.post('/basketAdd', async (req, res) => {
 
     logger.info(`Request received for URL: ${req.originalUrl}`);
-    const { book_id, book_count } = req.body;
-    var basketlistCheck = true;
-    var basket_id;
+    const { book_id, book_pharse_count, book_count } = req.body;
+    console.log("book_id : " , book_id ," book_pharse_count : ", book_pharse_count , "book_count : ", book_count )
 
-    console.log("book_id : " ,book_id);
+    //주문할 책이 책 수량 보다 많은가?
+    if (parseInt(book_count) < parseInt(book_pharse_count))
+    {
+        return res.send(
+            `<script type="text/javascript">
+            alert("주문을 책 수량보다 초과할 수 없습니다.");
+            location.href='/';
+            </script>`)
+    }
+
     //먼저 로그인이 되었는지 확인
     if (!req.session.userName)
     {
@@ -100,10 +108,11 @@ router.post('/basketAdd', async (req, res) => {
     else
     {
         try{
+
             //이제 책을 장바구니에 넣자
             await req.db.query(
                 'insert into basketlist(basket_id, book_id, book_count) values(?,?,?)'
-            ,[req.session.basket_id, book_id, book_count])
+            ,[req.session.basket_id, book_id, book_pharse_count])
 
             return res.send(
                 `<script type="text/javascript">

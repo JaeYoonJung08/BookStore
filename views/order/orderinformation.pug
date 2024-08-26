@@ -17,6 +17,7 @@ html
         text-align: left;
       }
     body 
+    a(href="/" style="margin-bottom: 10px;") 메인화면 돌아가기
     .container
         h1 주문내역 
         table
@@ -29,7 +30,8 @@ html
                 th 카드번호
                 th 카드종류
                 th 카드만료기간
-                th 상세보기
+                th 주문시간
+                th 주문한 책 상세보기
             tbody 
               each order in ordersList
                 tr
@@ -40,8 +42,6 @@ html
                   td= order.card_number 
                   td= order.type_card 
                   td= order.expriation_time 
-                  
-
-        
-        
-            
+                  td= new Date(order.order_time).toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).replace(/\. /g, '-').replace(' ', '')
+                  td 
+                    a(href=`/orderpage/${order.orders_id}`) 상세보기
