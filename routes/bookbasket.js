@@ -72,11 +72,6 @@ router.post('/order', async (req, res) => {
     const selectedBookList = Array.isArray(selectedBooks) ? selectedBooks.map(book => JSON.parse(book)) : [JSON.parse(selectedBooks)];
 
     try {
-        //책 조회
-        // const books = await req.db.query(
-        //     'SELECT * FROM booklist WHERE book_id IN (?)',
-        //     [selectedBookIds]
-        // );
         //기본 배송지, 상세 배송지, 우편 번호
         const UserAddr = await req.db.query(
             'select * from addr where user_id = ?',
@@ -104,18 +99,42 @@ router.post('/order', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     logger.info(`Request received for URL: ${req.originalUrl}`);
-    const {selectedBookList, totalPrice, selectedCard, selectedAddress} = req.body;
+    const {totalPrice, selectedCard, selectedAddress} = req.body;
+
+    let selectedBookList;
+    try {
+        selectedBookList = JSON.parse(req.body.selectedBookList);
+    } catch (e) {
+        selectedBookList = req.body.selectedBookList;
+    }
+
     console.log("totalPrice : ", totalPrice);
     console.log("selectedCard : ", selectedCard);
     console.log("selectedAddress : ", selectedAddress);
     console.log("selectedBookList : ", selectedBookList);
 
     try{
+        //주문시킨 책 만큼 책 개수 감소 //반복문!!!!!!!!!!!!!!!!!!!
+        const bookCounts = selectedBookList.map(book => book.book_count);
+        for (let book of selectedBookList) {
+            const { book_id, book_count } = book;
+            const rows = await req.db.query('SELECT book_count FROM booklist WHERE book_id = ?', [book_id]);
+            const currentCount = rows[0].book_count;
+
+            // Calculate the new book count
+            const newCount = parseInt(currentCount) - parseInt(book_count);
+
+            // Update the book count in the database
+            await req.db.query('UPDATE booklist SET book_count = ? WHERE book_id = ?', [newCount, book_id]);
+        }
+
+        //사용자 주소
         const valueAddr = await req.db.query(
             'select basic_add, detail_add, postal_code from addr where addr_id = ?', 
             [selectedAddress]
         )
 
+        //사용자 카드
         const valueCard = await req.db.query(
             'select card_number, type_card, expriation_time from card where card_id = ?', 
             [selectedCard]
@@ -136,14 +155,20 @@ router.post('/add', async (req, res) => {
         const orders_id = result.insertId;
         
         //여기서 부터 orderlist
-        const selectedBooks = JSON.parse(selectedBookList);
-        for (const book of selectedBooks) {
+        for (const book of selectedBookList) {
             const insertOrderListQuery = `
                 INSERT INTO orderlist (orders_id, book_id, orderlist_count)
                 VALUES (?, ?, ?)
             `;
             await req.db.query(insertOrderListQuery, [orders_id, book.book_id, book.book_count]);
+
+            //주문을 했으니 장바구니에서 없애주어야함. -> req.session.basket_id과 주문한 selectedBookList이용
+            req.db.query(
+                'delete from basketlist where basket_id = ? and book_id = ?',
+                [req.session.basket_id, book.book_id])
         }
+
+
         res.send(
             `<script type="text/javascript">
             alert("주문이 성공적으로 처리되었습니다.");

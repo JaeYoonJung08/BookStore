@@ -132,7 +132,7 @@ router.get('/select/all', async (req, res) => {
             `<script type="text/javascript">
             alert("데이터베이스 오류입니다.");
             location.href='/cardAddr';
-            </script>`) 
+            </script>`)
     }
  
 
