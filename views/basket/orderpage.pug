@@ -17,7 +17,23 @@ html
         text-align: left;
       }
     body 
-      form(action="/order/add", method="POST")
+      a(href="/" style="margin-bottom: 10px;") 메인화면 돌아가기
+      form(action="/bookbasket/add", method="POST")
+        h2 주문 목록
+        table
+          thead 
+            tr
+              th 책 ID 
+              th 책 이름
+              th 가격
+              th 수량
+          tbody 
+            each book in selectedBookList
+              tr
+                td= book.book_id
+                td= book.book_name
+                td= book.book_price
+                td= book.book_count
         h2 주문 총액: #{all_price} 원
         h3 배송지 정보
         if UserAddr.length
@@ -35,22 +51,5 @@ html
           p 카드 정보가 없습니다.
         input(type="hidden", name="totalPrice", value=all_price)
         input(type="hidden", name="selectedBookList", value=selectedBookList)
-        input(type="hidden", name="books", value=books)
         button(type="submit") 주문하기
-
-          //- input(type="hidden", name="books", value=JSON.stringify(books))
-
-      //- if books.length
-      //- table
-      //-   thead 
-      //-     tr
-      //-       th 책 ID 
-      //-       th 책 이름
-      //-       th 가격
-      //-   tbody 
-      //-     each book in books
-      //-       tr
-      //-         td= book.book_id
-      //-         td= book.book_name
-      //-         td= book.book_price
       

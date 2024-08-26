@@ -28,6 +28,7 @@ html
         margin-bottom: 10px;
       }
   body
+    a(href="/" style="margin-bottom: 10px;") 메인화면 돌아가기
     h1 이 페이지는 카드와 주소를 등록하기 위한 페이지입니다.
     .form-container
       form(action="/cardAddr/create/card" method="post")
@@ -53,4 +54,7 @@ html
           input(type="text" name="userPostal" placeholder="우편번호를 입력해주세요")
         div
           button(type="submit") 주소등록
+      form(action="/cardAddr/select/all" method="get")
+        div
+          button(type="submit") 카드, 주소 전체 조회
 

@@ -38,34 +38,36 @@ html
         padding : 5px;
       }
   body
-    h1 이 페이지는 책 추가와 조회를 위한 페이지입니다.
+    a(href="/" style="margin-bottom: 10px;") 메인화면 돌아가기
+    h1 이 페이지는 사용자의 카드와 주소를 조회하는 페이지입니다.
     .container
       table
         thead
           tr
-            th 책 ID
-            th 책 이름
-            th 책 수량
-            th 가격
-            th 상세보기
+            th 카드 번호
+            th 카드 종류
+            th 유효기간
         tbody
-          each book in books
+          each cards in card
             tr
-              td= book.book_id
-              td= book.book_name
-              td= book.book_count
-              td= book.book_price
-              td
-                a(href=`/booklist/${book.book_id}`) 상세보기
-      form(action="/booklist/bookAdd", method="post")
-        div 
-          input(type="text", name="bookName", placeholder="책 이름을 작성해주세요.")
-        div 
-          input(type="text", name="bookCount", placeholder="책 수량을 입력해주세요")
-        div 
-          input(type="text", name="bookPrice", placeholder="책 가격을 입력해주세요.")
-        div 
-          button(type="submit") 책 추가
+              td= cards.card_number
+              td= cards.type_card
+              td= cards.expriation_time
+        br
+      table
+        thead
+          tr
+            th 기본 주소
+            th 상세 주소
+            th 우편번호
+        tbody
+          each addrs in addr
+            tr
+              td= addrs.basic_add
+              td= addrs.detail_add
+              td= addrs.postal_code
+
+ 
 
         
 
