@@ -134,6 +134,7 @@ router.post('/add', async (req, res) => {
             [selectedAddress]
         )
 
+        
         //사용자 카드
         const valueCard = await req.db.query(
             'select card_number, type_card, expriation_time from card where card_id = ?', 
