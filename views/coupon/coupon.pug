@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    title orderSelectedPage
+    style.
+      table {
+        width: 50%;
+        border-collapse: collapse;
+        margin-right: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+    body 
+    a(href="/" style="margin-bottom: 10px;") 메인화면 돌아가기
+    .container
+        h1 쿠폰내역 
+        table
+            thead 
+              tr
+                th 쿠폰 아이디 
+                th 쿠폰 번호
+                th 쿠폰 생성 시간
+                th 쿠폰 유효기간
+                th 쿠폰 종류
+            tbody 
+              each order in checkcoupon
+                tr
+                  td= order.coupon_id
+                  td= order.coupon_number 
+                  td= order.create_time
+                  td= order.fin_time
+                  td= order.type
+

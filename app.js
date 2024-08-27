@@ -56,6 +56,7 @@ var carAddress = require('./routes/cardAddress');
 var bookList = require('./routes/booklist')
 var Bookbasket = require('./routes/bookbasket')
 var Order = require('./routes/orderpage');
+var coupon = require('./routes/coupon');
 
 
 // view engine setup
@@ -75,6 +76,7 @@ app.use('/cardAddr', carAddress);
 app.use('/booklist', bookList);
 app.use('/bookbasket', Bookbasket);
 app.use('/orderpage', Order);
+app.use('/coupon', coupon);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

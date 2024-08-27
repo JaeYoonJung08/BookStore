@@ -49,6 +49,14 @@ html
               option(value=card.card_id)= `${card.type_card} 카드 - ${card.card_number} (유효기간: ${card.expriation_time})`
         else
           p 카드 정보가 없습니다.
+        h3 쿠폰 정보
+        if UserCoupon.length
+          select(name="selectedCoupon")
+            each vailCou in validCoupons
+              option(value=vailCou)= `${vailCou.coupon_number} 쿠폰 번호 - ${vailCou.fin_time} 쿠폰 만료 기간 - ${vailCou.type} 쿠폰 종류)`
+        else
+          p 사용 가능한 쿠폰이 없습니다.
+        
         input(type="hidden", name="totalPrice", value=all_price)
         input(type="hidden", name="selectedBookList", value=selectedBookList)
         button(type="submit") 주문하기

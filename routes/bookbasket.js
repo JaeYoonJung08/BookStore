@@ -83,10 +83,37 @@ router.post('/order', async (req, res) => {
             [req.session.user_id]
         )
 
+        //쿠폰
+        let UserCoupon = await req.db.query(
+            'select * from coupon where user_id = ? and is_used = ?'
+            ,[req.session.user_id, false]
+        )
+        let validCoupons = [];
+
+        for (let coupon of UserCoupon) {
+
+            const finTime = new Date(coupon.fin_time); // fin_time을 Date 객체로 변환
+            console.log("coupon" , coupon)
+            const now = new Date();
+            console.log("finTime : " , finTime, " now : " , now)
+            if (now < finTime) {
+                if (coupon.is_used == "false")
+                    validCoupons.push(coupon);
+                
+                console.log('쿠폰이 아직 유효합니다.');
+            } else {
+                console.log('쿠폰이 아직 유효합니다.');
+            }
+        }
+
+
+
         console.log("UserAddr : " , UserAddr)
         console.log("UserCard : " , UserCard)
+        console.log("UserCard : " , UserCoupon)
+        console.log("validCoupons : " , validCoupons)
 
-        res.render('basket/orderpage', {all_price, UserAddr, UserCard, selectedBookList});
+        res.render('basket/orderpage', {all_price, UserAddr, UserCard, selectedBookList, UserCoupon, validCoupons});
     } catch (error) {
         console.log(error);
         res.send(
@@ -99,7 +126,44 @@ router.post('/order', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     logger.info(`Request received for URL: ${req.originalUrl}`);
-    const {totalPrice, selectedCard, selectedAddress} = req.body;
+    const {selectedCard, selectedAddress, selectedCoupon} = req.body; 
+
+
+    const selectedCouponjson = selectedCoupon ? JSON.parse(selectedCoupon) : null;
+
+
+    const totalPrice = parseInt(req.body.totalPrice) // 
+    
+    let descent = totalPrice;
+
+    if (selectedCouponjson)
+    {
+        console.log("selectedCoupon.type : ", selectedCouponjson.type);
+        
+        if (selectedCouponjson.type == "10%")
+        {
+            let precentPrice = descent / 10
+            descent = descent - precentPrice
+        }
+        else if (selectedCouponjson.type == "1000")
+        {
+            descent = descent - 1000 
+        }
+        try{
+            req.db.query(
+                'update coupon set is_used = ? where coupon_id = ? ',
+                ["true", selectedCouponjson.coupon_id]
+            )
+            console.log("Coupon!");
+        }
+        catch(error){
+            console.log(error);
+        }
+
+    }
+    console.log("descent! : ", descent);
+
+
 
     let selectedBookList;
     try {
@@ -144,14 +208,22 @@ router.post('/add', async (req, res) => {
         const { card_number, type_card, expriation_time } = valueCard[0];
         
         //order 테이블에 값 넣기
-        const insertOrderQuery = `
-        INSERT INTO orders (
-            user_id, all_price, basic_add, detail_add, postal_code, card_number, type_card, expriation_time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        const insertOrderQuery = `INSERT INTO orders (user_id, all_price, basic_add, detail_add, postal_code, card_number, type_card, expriation_time, descount_price, coupon_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        let result;
+        if (selectedCouponjson)
+        {
+            result = await req.db.query(insertOrderQuery, [
+                req.session.user_id, totalPrice, basic_add, detail_add, postal_code, card_number, type_card, expriation_time, descent, selectedCouponjson.coupon_number
+            ]);
+        }
+        else 
+        {
+            result = await req.db.query(insertOrderQuery, [
+                req.session.user_id, totalPrice, basic_add, detail_add, postal_code, card_number, type_card, expriation_time, null, null
+            ]);
+        }
         
-        const result = await req.db.query(insertOrderQuery, [
-            req.session.user_id, totalPrice, basic_add, detail_add, postal_code, card_number, type_card, expriation_time
-        ]);
+
         console.log('Order inserted successfully ', result);
         const orders_id = result.insertId;
         
