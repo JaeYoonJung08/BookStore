@@ -128,14 +128,10 @@ router.post('/add', async (req, res) => {
     logger.info(`Request received for URL: ${req.originalUrl}`);
     const {selectedCard, selectedAddress, selectedCoupon} = req.body; 
 
-
+    //선택한 쿠폰이 있는지 없는지 검사 있으면 Json으로 만들기 없으면 null
     const selectedCouponjson = selectedCoupon ? JSON.parse(selectedCoupon) : null;
-
-
-    const totalPrice = parseInt(req.body.totalPrice) // 
-    
+    const totalPrice = parseInt(req.body.totalPrice)
     let descent = totalPrice;
-
     if (selectedCouponjson)
     {
         console.log("selectedCoupon.type : ", selectedCouponjson.type);
@@ -162,8 +158,6 @@ router.post('/add', async (req, res) => {
 
     }
     console.log("descent! : ", descent);
-
-
 
     let selectedBookList;
     try {
