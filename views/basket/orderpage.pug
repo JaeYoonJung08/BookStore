@@ -52,6 +52,7 @@ html
         h3 쿠폰 정보
         if UserCoupon.length
           select(name="selectedCoupon")
+            option(value="" disabled selected) 쿠폰 선택 안 함
             each vailCou in validCoupons
               option(value=vailCou)= `${vailCou.coupon_number} 쿠폰 번호 - ${vailCou.fin_time} 쿠폰 만료 기간 - ${vailCou.type} 쿠폰 종류)`
         else
